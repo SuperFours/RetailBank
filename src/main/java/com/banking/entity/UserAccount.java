@@ -23,16 +23,16 @@ import lombok.Setter;
 @Setter
 @Getter
 @Table(name = "user_account")
-@SequenceGenerator(name = "sequence", initialValue = 10)
+@SequenceGenerator(name = "accountNumber", allocationSize = 1, initialValue = 50006000)
 public class UserAccount {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	@Column(name = "user_id")
-	
 	private Integer userId;
 	private String accountType;
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "accountNumber")
 	private Long accountNumber;
 	private Double minimumBalance;
 	private Double balanceAmount;

@@ -51,4 +51,10 @@ public final class AppConstant {
 	public static final String USER_NOT_FOUND = "No Users Found";
 	public static final String AGE_ERROR_MESSAGE = "User should not have less than 18 years to open account";
 
+	//getAccount Number
+	public static final String SAVINGS = "saving";
+	public static final String MORTGAGE = "mortgage";
+	
+
+	
 }

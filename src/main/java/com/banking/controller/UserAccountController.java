@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.banking.constant.AppConstant;
 import com.banking.dto.AccountBalanceDto;
+import com.banking.dto.UserAccountDto;
+import com.banking.dto.UserAccountResponseDto;
 import com.banking.dto.ViewPayeeDto;
 import com.banking.service.UserAccountService;
 
@@ -34,6 +37,7 @@ public class UserAccountController {
 
 	/**
 	 * get the payee list
+	 * 
 	 * @param accountId
 	 * @return
 	 */
@@ -45,6 +49,7 @@ public class UserAccountController {
 
 	/**
 	 * get the user account balances.
+	 * 
 	 * @param accountId
 	 * @return
 	 */
@@ -52,6 +57,25 @@ public class UserAccountController {
 	public ResponseEntity<AccountBalanceDto> getUserAvailableBalance(@PathVariable Integer accountId) {
 		AccountBalanceDto accountDto = userAccountService.getAccountBalance(accountId);
 		return new ResponseEntity<>(accountDto, HttpStatus.OK);
+	}
+
+	/**
+	 * 
+	 * @param accountNumber
+	 * @return
+	 */
+	@GetMapping("/search/{accountNumber}")
+	public ResponseEntity<UserAccountResponseDto> searchSavingAccounts(@PathVariable String accountNumber) {
+		UserAccountResponseDto userAccountResponseDto = new UserAccountResponseDto();
+		List<UserAccountDto> userAccounts = userAccountService.getAccounts(accountNumber);
+		userAccountResponseDto.setUserAccounts(userAccounts);
+		userAccountResponseDto.setStatusCode(HttpStatus.OK.value());
+		if(userAccounts.isEmpty()) {
+			userAccountResponseDto.setMessage(AppConstant.NO_RECORD_FOUND);
+		}else {
+			userAccountResponseDto.setMessage(AppConstant.SUCCESS);
+		}
+		return new ResponseEntity<>(userAccountResponseDto, HttpStatus.OK);
 	}
 
 }
