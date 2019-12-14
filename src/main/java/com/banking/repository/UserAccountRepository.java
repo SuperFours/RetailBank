@@ -1,6 +1,7 @@
 package com.banking.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,5 +19,7 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Intege
 	
 	@Query("Select u from UserAccount u WHERE CAST(u.accountNumber AS string) LIKE %:accountNumber%")
 	List<UserAccount> findAllByAccountNumber(@Param("accountNumber") String accountNumber);
+
+	Optional<UserAccount> findByAccountNumberAndAccountType(Long accountNumber, String accountTypeMortgage);
 
 }

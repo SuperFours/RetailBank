@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
 			userAccount.setId(user.getId());
 			userAccount.setMinimumBalance(AppConstant.ACCOUNT_MINIMUM_BALANCE);
 			userAccount.setUserId(user.getId());
-			userAccount.setAccountType(AppConstant.ACCOUNT_TYPE);
+			userAccount.setAccountType(AppConstant.ACCOUNT_TYPE_SAVINGS);
 			userAccount.setBalanceAmount(AppConstant.ACCOUNT_BALANCE_AMOUNT);
 			userAccount.setCreatedDate(LocalDateTime.now());
 			userAccountRepository.save(userAccount);

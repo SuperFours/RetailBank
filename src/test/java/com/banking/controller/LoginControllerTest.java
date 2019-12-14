@@ -44,7 +44,7 @@ public class LoginControllerTest {
 		loginResponseDto.setMessage(AppConstant.LOGIN_SUCCESS_MESSAGE);
 		loginResponseDto.setAccountId(1);
 		loginResponseDto.setAccountNumber(87873287323L);
-		loginResponseDto.setAccountType(AppConstant.ACCOUNT_TYPE);
+		loginResponseDto.setAccountType(AppConstant.ACCOUNT_TYPE_SAVINGS);
 
 		when(loginService.login(loginDto)).thenReturn(loginResponseDto);
 
@@ -54,7 +54,7 @@ public class LoginControllerTest {
 		assertEquals(AppConstant.LOGIN_SUCCESS_MESSAGE, response.getBody().getMessage());
 		assertEquals(1, response.getBody().getAccountId());
 		assertEquals(87873287323L, response.getBody().getAccountNumber());
-		assertEquals(AppConstant.ACCOUNT_TYPE, response.getBody().getAccountType());
+		assertEquals(AppConstant.ACCOUNT_TYPE_SAVINGS, response.getBody().getAccountType());
 
 	}
 
