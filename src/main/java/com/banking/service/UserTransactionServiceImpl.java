@@ -139,17 +139,17 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 	 */
 	@Override
 	public UserTransactionResponseDto findUserTransactionsByMonth(Integer userAccountId, Integer month, Integer year) {
-		String searchCriteria;
 
-		if (month < 9) {
-			String monthWithZero = "0" + month;
-			searchCriteria = "" + year + "-" + monthWithZero + "";
-		} else {
-			searchCriteria = "" + year + "-" + month + "";
-		}
+		logger.info("to get monthly transactions");
+
+		String inputMonth = String.format("%02d", month);
+		YearMonth yearMonth = Year.parse(year.toString()).atMonth(month);
+
+		LocalDate startDate = LocalDate.parse(yearMonth + "-" + inputMonth + "-" + "01");
+		LocalDate endDate = Year.parse(year.toString()).atMonth(year).atEndOfMonth();
 
 		List<UserTransaction> userTransactionResponse = userTransactionRepository
-				.findByMatchMonthAndMatchDay(userAccountId, searchCriteria);
+				.getAllByUserAccountIdAndTransactionDateBetween(userAccountId, startDate, endDate);
 
 		return convertUserTransactionEntityToUserTransactionResponseDto(userTransactionResponse);
 	}

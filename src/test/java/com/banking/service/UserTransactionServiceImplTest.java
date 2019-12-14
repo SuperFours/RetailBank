@@ -159,14 +159,13 @@ public class UserTransactionServiceImplTest {
 
 		assertThat(response.getTransactionDetails()).hasSize(1);
 	}
-
 	@Test
 	public void testFindUserTransactionsByMonth() {
 
-		when(userTransactionRepository.findByMatchMonthAndMatchDay(userAccount.getId(), "%2019-12%"))
+		when(userTransactionRepository.getAllByUserAccountIdAndTransactionDateBetween(userAccount.getId(), LocalDate.of(2019, 12, 01), LocalDate.of(2019, 12, 31)))
 				.thenReturn(userTransactions);
 		List<UserTransaction> userTransactions = userTransactionRepository
-				.findByMatchMonthAndMatchDay(userAccount.getId(), "%2019-12%");
+				.getAllByUserAccountIdAndTransactionDateBetween(userAccount.getId(), LocalDate.of(2019, 12, 01), LocalDate.of(2019, 12, 31));
 		Assert.assertNotNull(userTransactions);
 		Assert.assertEquals(1, userTransactions.size());
 	}

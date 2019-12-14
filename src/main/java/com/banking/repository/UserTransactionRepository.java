@@ -15,7 +15,6 @@ public interface UserTransactionRepository extends JpaRepository<UserTransaction
 	List<UserTransaction> findTop5ByUserAccountIdIdOrPayeeAccountIdIdOrderByIdDesc(Integer userAccountId,
 			Integer payyeAccountId);
 
-	@Query(value = "SELECT * FROM user_transaction WHERE user_account_id = ?1 AND transaction_date Like %?2%", nativeQuery = true)
-	List<UserTransaction> findByMatchMonthAndMatchDay(@Param("userAccountId") Integer userAccountId,
-			@Param("transactionDate") String transactionDate);
+	List<UserTransaction> getAllByUserAccountIdAndTransactionDateBetween(Integer userAccountId, LocalDate startDate,
+			LocalDate endDate);
 }

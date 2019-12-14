@@ -16,7 +16,6 @@ public final class AppConstant {
 	public static final String RECORD_ALREADY_EXISTS = "Record Already Exists";
 
 	// Fund Transfer
-	public static final String ACCOUNT_TYPE = "Savings";
 	public static final String TRANSACTION_TYPE = "IMPS";
 	public static final String FUND_TRANSFER_SUCCESS = "Amount Transfered Sucessfully";
 	public static final String FUND_TRANSFER_MIN_BAL = "Please check minimum balance.";
@@ -54,6 +53,14 @@ public final class AppConstant {
 	//getAccount Number
 	public static final String SAVINGS = "saving";
 	public static final String MORTGAGE = "mortgage";
+	
+	//Martgage account
+	public static final String ACCOUNT_TYPE_SAVINGS = "Savings";
+	public static final String ACCOUNT_TYPE_MORTGAGE = "Mortgage";
+	
+	public static final String MORTGAGE_ACCOUNT_CREATED = "Mortgage account is created successfully";
+	public static final String USER_MORTGAGE_ACCOUNT_EXIST = "User Mortgage Account already exist";
+
 	
 
 	
