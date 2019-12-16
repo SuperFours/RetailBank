@@ -1,7 +1,7 @@
 package com.banking.service;
 
 import java.time.LocalDate;
-import java.time.Year;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -259,4 +259,19 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 		return userTransactionResponseDto;
 	}
 
+	/**
+	 * @description This method will generate random transaction number and return it to method call
+	 * @return transaction number as String 
+	 */
+	String getTransactionNumber() {
+		Integer transactionId = CommonUtil.getTransactionNumber();
+		String transactionNumber = AppConstant.GET_TRANSACTION_NO_PREFIX + transactionId;
+
+		UserTransaction userTransaction = userTransactionRepository.findByTransactionId(transactionNumber);
+		Optional<UserTransaction> isUserTransaction = Optional.ofNullable(userTransaction);
+		if (isUserTransaction.isPresent()) {
+			getTransactionNumber();
+		}
+		return transactionNumber;
+	}
 }
