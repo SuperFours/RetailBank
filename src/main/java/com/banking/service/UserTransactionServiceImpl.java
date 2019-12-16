@@ -106,7 +106,7 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 				fundTransferResponseDto.setMessage(AppConstant.FUND_TRANSFER_MIN_BAL);
 			}
 		} else {
-			throw new NotFoundException("No Accounts Found.");
+			throw new NotFoundException(AppConstant.NO_ACCOUNTS_FOUND);
 		}
 
 		return fundTransferResponseDto;
@@ -152,6 +152,7 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 	 *         based retuired params only.
 	 */
 	private UserTransactionResponseDto convertUserTransactionEntityToMortgage(List<UserTransaction> transactions) {
+		logger.info("converting the transaction to transaction dto...");
 		UserTransactionResponseDto responseDto = new UserTransactionResponseDto();
 		List<UserTransactionRequestDto> list = new ArrayList<>();
 		transactions.forEach(transaction -> {
@@ -159,18 +160,18 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 			UserAccount userAccount = transaction.getPayeeAccountId();
 			if (userAccount.getAccountType().equals(AppConstant.ACCOUNT_TYPE_MORTGAGE)) {
 
-				UserTransactionRequestDto userTransactionRequestDto = new UserTransactionRequestDto();
+				UserTransactionRequestDto obj = new UserTransactionRequestDto();
 				Optional<User> user = userRepository.findById(transaction.getPayeeAccountId().getUserId());
 				if (user.isPresent()) {
-					userTransactionRequestDto.setPayeeName(user.get().getFirstName() + " " + user.get().getLastName());
+					obj.setPayeeName(user.get().getFirstName() + " " + user.get().getLastName());
 				}
-				userTransactionRequestDto.setRemarks(transaction.getRemarks());
-				userTransactionRequestDto.setPayeeAccountNumber(transaction.getPayeeAccountId().getAccountNumber());
-				userTransactionRequestDto.setTransactionType(transaction.getTransactionType());
-				userTransactionRequestDto.setTransactionDate(transaction.getTransactionDate());
-				userTransactionRequestDto.setBalanceAmount(transaction.getPayeeAccountId().getBalanceAmount());
-				userTransactionRequestDto.setTransactionAmount(transaction.getTransactionAmount());
-				list.add(userTransactionRequestDto);
+				obj.setRemarks(transaction.getRemarks());
+				obj.setPayeeAccountNumber(transaction.getPayeeAccountId().getAccountNumber());
+				obj.setTransactionType(transaction.getTransactionType());
+				obj.setTransactionDate(transaction.getTransactionDate());
+				obj.setBalanceAmount(transaction.getPayeeAccountId().getBalanceAmount());
+				obj.setTransactionAmount(transaction.getTransactionAmount());
+				list.add(obj);
 			}
 		});
 
@@ -185,26 +186,40 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 	}
 
 	/**
+	 * @description get the transaction number based on the unique alphanumeric
+	 *              values.
+	 * 
+	 * @return return the string value of the generated transaction number.
+	 */
+	public String getTransactionNumber() {
+		logger.info("get the transaction number...");
+		Integer transactionId = CommonUtil.getTransactionNumber();
+		String transactionNumber = AppConstant.GET_TRANSACTION_NO_PREFIX + transactionId;
+
+		UserTransaction userTransaction = userTransactionRepository.findByTransactionId(transactionNumber);
+		Optional<UserTransaction> isUserTransaction = Optional.ofNullable(userTransaction);
+		if (isUserTransaction.isPresent()) {
+			getTransactionNumber();
+		}
+		return transactionNumber;
+
+	}
+
+	/**
 	 * this method is to get entire month transactions to respective userAccountId
-	 * @param userAccountId Integer, month Integer, year Integer - providing required account number, month and year to search monthly transactions
-	 * @return UserTransactionResponseDto  object contain with status and message along with response object
+	 * 
+	 * @return UserTransactionResponseDto
 	 */
 	@Override
 	public UserTransactionResponseDto findUserTransactionsByMonth(Integer userAccountId, Integer month, Integer year) {
 
-		logger.info("Getting monthly transactions fot the given user account");
-		
+		logger.info("to get monthly transactions");
+
 		String inputMonth = String.format("%02d", month);
-
-		LocalDate startDate = LocalDate.parse(year + "-" + inputMonth + "-" + AppConstant.MONTH_STARTDATE);
-
-		Integer lastDayOfMonth = YearMonth.of(year, month).atEndOfMonth().getDayOfMonth();
-
-		LocalDate endDate = LocalDate.parse(year + "-" + inputMonth + "-" + lastDayOfMonth);
-
+		LocalDate startDate = LocalDate.parse(year + "-" + inputMonth + "-" + "01");
+		LocalDate endDate = Year.parse(year.toString()).atMonth(year).atEndOfMonth();
 		List<UserTransaction> userTransactionResponse = userTransactionRepository
 				.getAllByUserAccountIdAndTransactionDateBetween(userAccountId, startDate, endDate);
-		
 		return convertUserTransactionEntityToUserTransactionResponseDto(userTransactionResponse);
 	}
 
@@ -215,34 +230,29 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 	 * @return UserTransactionResponseDto values are response required values only
 	 *         sended.
 	 */
-	/**
-	 * @description this is private method it is used for Entity to DtoResponse
-	 *              converts - written in single separate method for code re-use
-	 * @param userTransactionResponse object
-	 * @return UserTransactionResponseDto return the object with status code and message
-	 */
 	private UserTransactionResponseDto convertUserTransactionEntityToUserTransactionResponseDto(
 			List<UserTransaction> userTransactionResponse) {
+		logger.info("convert the user transaction to responseDto...");
 
 		UserTransactionResponseDto userTransactionResponseDto = new UserTransactionResponseDto();
 		List<UserTransactionRequestDto> response = new ArrayList<>();
 
 		if (null != userTransactionResponse && userTransactionResponse.size() > AppConstant.ZERO) {
 
-			response = userTransactionResponse.stream().map(request -> {
+			response = userTransactionResponse.stream().map(temp -> {
 
-				UserTransactionRequestDto userTransactionRequestDto = new UserTransactionRequestDto();
-				Optional<User> user = userRepository.findById(request.getPayeeAccountId().getUserId());
+				UserTransactionRequestDto obj = new UserTransactionRequestDto();
+				Optional<User> user = userRepository.findById(temp.getPayeeAccountId().getUserId());
 				if (user.isPresent()) {
-					userTransactionRequestDto.setPayeeName(user.get().getFirstName() +" "+ user.get().getLastName());
+					obj.setPayeeName(user.get().getFirstName() + " " + user.get().getLastName());
 				}
-				userTransactionRequestDto.setRemarks(request.getRemarks());
-				userTransactionRequestDto.setPayeeAccountNumber(request.getPayeeAccountId().getAccountNumber());
-				userTransactionRequestDto.setTransactionType(request.getTransactionType());
-				userTransactionRequestDto.setTransactionDate(request.getTransactionDate());
-				userTransactionRequestDto.setTransactionAmount(request.getTransactionAmount());
+				obj.setRemarks(temp.getRemarks());
+				obj.setPayeeAccountNumber(temp.getPayeeAccountId().getAccountNumber());
+				obj.setTransactionType(temp.getTransactionType());
+				obj.setTransactionDate(temp.getTransactionDate());
+				obj.setTransactionAmount(temp.getTransactionAmount());
 
-				return userTransactionRequestDto;
+				return obj;
 			}).collect(Collectors.toList());
 
 			userTransactionResponseDto.setMessage(AppConstant.OPERATION_SUCCESS);
