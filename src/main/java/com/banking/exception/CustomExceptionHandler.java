@@ -22,7 +22,9 @@ import com.banking.dto.ResponseDto;
 import javassist.NotFoundException;
 
 /**
- * CustomExceptionHandler - we are handled here the global exceptions concepts
+ * @description CustomExceptionHandler - we are handled here the global
+ *              exceptions concepts for validations error handled with
+ *              handleMethodArgumentNotValid exception user not found exception
  * 
  * @author Govindasamy.C
  * @version V1.1
@@ -32,7 +34,11 @@ import javassist.NotFoundException;
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
 	/**
-	 * handleMethodArgumentNotValid error handle for @Valid
+	 * @description get the validation filed errors while sending params in the
+	 *              method of the request body params. In this case, we can validate
+	 *              the each field error values.
+	 * @return ResponseEntity object for setting the response values with status,
+	 *         errors with body
 	 */
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
@@ -50,6 +56,14 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(body, headers, status);
 	}
 
+	/**
+	 * @description handleNoRecordFoundException for when check the object is
+	 *              present or not, if not present we can throw and handle the
+	 *              notfoundexception.
+	 * @param ex - ex is the notfoundexception value.
+	 * @return responseDto values are success, successcode and massage details of
+	 *         response.
+	 */
 	@ExceptionHandler(NotFoundException.class)
 	public ResponseEntity<ResponseDto> handleNoRecordFoundException(NotFoundException ex) {
 		ResponseDto fundTransferResponseDto = new ResponseDto();
