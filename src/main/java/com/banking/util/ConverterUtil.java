@@ -11,7 +11,7 @@ import com.banking.entity.UserTransaction;
 
 /**
  * ConverterUtil - ConverterUtil mainly used for converting the objects to
- * another object
+ * another object of transaction
  * 
  * @author Govindasamy.C
  * @since - 05-12-2019
@@ -43,7 +43,7 @@ public class ConverterUtil {
 	 * @description convert the user account and user values to viewpayeedto
 	 *              details.
 	 * @param userAccount entity values.
-	 * @param user entity object values.
+	 * @param user        entity object values.
 	 * @return viewpayeedto values are set the accountType, accountId, accountnumber
 	 *         and payeename.
 	 */

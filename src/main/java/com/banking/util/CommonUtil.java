@@ -4,7 +4,7 @@ import java.util.Random;
 
 /**
  * @description CommonUtil - get the common static methods implemeneted in the
- *              util class.
+ *              util class are generated and get the transaction number.
  * 
  * @author Govindasamy.C
  * @since : 27-11-2019

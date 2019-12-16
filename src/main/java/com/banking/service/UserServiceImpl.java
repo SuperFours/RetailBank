@@ -6,6 +6,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +21,10 @@ import com.banking.repository.UserAccountRepository;
 import com.banking.repository.UserRepository;
 
 /**
- * This is UserServiceImpl class that has 2 methods
+ * @description User service implementation class purpose we can implemented
+ *              here the functionalities of user service methods of user
+ *              registration, generate the account number and also generate the
+ *              password.
  * 
  * @author Janani
  * @since 2019-12-5
@@ -27,6 +32,7 @@ import com.banking.repository.UserRepository;
  */
 @Service
 public class UserServiceImpl implements UserService {
+	public static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
 	@Autowired
 	UserRepository userRepository;
@@ -35,14 +41,20 @@ public class UserServiceImpl implements UserService {
 	UserAccountRepository userAccountRepository;
 
 	/**
-	 * This is registerUser method used to register and it will generate
-	 * accountNumber for the user
+	 * @description This is registerUser method used to register and it will
+	 *              generate accountNumber for the user.
+	 * @param registraionRequestDto object the values of the user registraion param
+	 *                              values.
+	 * @return responseDto object have the returns the success or failure message,
+	 *         status based on the validations.
 	 *
 	 */
 
 	@Override
 	public RegisterResponseDto registerUser(RegisterRequestDto userRegisterDto) {
+		logger.info("user registarion...");
 		RegisterResponseDto registerResponseDto = new RegisterResponseDto();
+		// check the phone number is already exists or not.
 		User isValidUser = userRepository.findUserByPhone(userRegisterDto.getPhone());
 		Optional<User> optioanlUser = Optional.ofNullable(isValidUser);
 		if (!optioanlUser.isPresent()) {
@@ -94,14 +106,19 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
-	 * get the password by using alpha numeric characters
+	 * @description get the password by using alpha numeric characters
 	 * 
-	 * @return
+	 * @return String of the generated password.
 	 */
 	public String generatePassword() {
 		return RandomStringUtils.random(6, true, true);
 	}
 
+	/**
+	 * @description get the account number by generated new account number based on
+	 *              the numeric values.
+	 * @return return the long value of the generated account number.
+	 */
 	public Long generateAccountNumber() {
 		String number = RandomStringUtils.random(16, false, true);
 		return Long.valueOf(number);

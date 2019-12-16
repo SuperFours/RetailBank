@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class UserAccountServiceImpl implements UserAccountService {
+	public static final Logger logger = LoggerFactory.getLogger(UserAccountServiceImpl.class);
 
 	@Autowired
 	private UserAccountRepository userAccountRepository;
@@ -49,6 +52,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 	 */
 	@Override
 	public List<ViewPayeeDto> getAllPayees(Integer accountId) {
+		logger.info("get all payees...");
 		List<ViewPayeeDto> viewPayeeDtos = new ArrayList<>();
 		List<UserAccount> userAccounts = userAccountRepository.findAllByIdNot(accountId);
 		userAccounts.forEach(userAccount -> {
@@ -68,6 +72,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 	 */
 	@Override
 	public AccountBalanceDto getAccountBalance(Integer userAccountId) {
+		logger.info("get the account balance for logged user...");
 		AccountBalanceDto accountBalanceDto = new AccountBalanceDto();
 
 		Optional<UserAccount> userAccount = userAccountRepository.findById(userAccountId);
@@ -92,6 +97,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 	 */
 	@Override
 	public List<UserAccountDto> getAccounts(String accountNumber) {
+		logger.info("get the all accounts based on admin search...");
 		List<UserAccount> userAccounts = userAccountRepository.findAllByAccountNumber(accountNumber);
 		return userAccounts.stream()
 				.filter(account -> !account.getAccountType().equalsIgnoreCase(AppConstant.ACCOUNT_TYPE_MORTGAGE))

@@ -32,8 +32,10 @@ import com.banking.util.ConverterUtil;
 import javassist.NotFoundException;
 
 /**
- * UserTransactionServiceImpl - we can implementing the user transaction
- * methods.
+ * @description UserTransactionServiceImpl - we can implementing the user
+ *              transaction methods of the fund transfer based on the user
+ *              account to user account and also implemented the fund transfer
+ *              to user account to mortgage account for paid loan amount.
  * 
  * @author Govindasamy.C
  * @since 05-12-2019
@@ -54,9 +56,15 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 	UserRepository userRepository;
 
 	/**
-	 * user fund trasnfer
-	 * 
-	 * @return throws NotFoundException
+	 * @description user can transfer the amount to one user account to another user
+	 *              account and also we are handle the user can to pay the loan
+	 *              amount.ie, user acccount to user mortgage account.
+	 * @param its send the param values are fund transfer related params for
+	 *            accountFrom, accountId and transfer amount value.
+	 * @return responseDto object set the success and failure values.
+	 * @throws NotFoundException for check whether useraccountId is present or not.
+	 *                           if not present, we thorws the useraccount not found
+	 *                           exception.
 	 */
 	@Override
 	public ResponseDto fundTransfer(FundTransferRequestDto fundTransferRequestDto) throws NotFoundException {
@@ -88,6 +96,7 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 				// Credit the payee acoount balance amount
 				Double creditAmount = userPayeeAccount.getBalanceAmount() + fundTransferRequestDto.getTransferAmount();
 				userPayeeAccount.setBalanceAmount(creditAmount);
+				logger.debug("before saving the fund transfer...");
 				userAccountRepository.save(userPayeeAccount);
 
 				fundTransferResponseDto.setStatus(AppConstant.SUCCESS);
@@ -103,36 +112,54 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 		return fundTransferResponseDto;
 	}
 
-	/*
-	 * This method is used for to get recent 5 transactions input parameter :
-	 * Integer userAccountId return : UserTransactionResponseDto throws :
-	 * NoResultException
+	/**
+	 * @description This method is used for to get recent 5 transactions input
+	 *              parameter account and also we are handle the user can to pay the
+	 *              loan amount.ie, user acccount to user mortgage account.
+	 * 
+	 * @return usertransactionresponsedto object for return list of last five
+	 *         transactions summary.
 	 */
 	@Override
 	public UserTransactionResponseDto findRecentFiveTransactions(Integer userAccountId) {
+		logger.info("recent five transaction summary...");
 		List<UserTransaction> userTransactionResponse = userTransactionRepository
 				.findTop5ByUserAccountIdIdOrPayeeAccountIdIdOrderByIdDesc(userAccountId, userAccountId);
 
 		return convertUserTransactionEntityToUserTransactionResponseDto(userTransactionResponse);
 	}
-	
+
+	/**
+	 * @description get the all morgage account transaction summary based on the
+	 *              login user.
+	 * @return list of the mortgage account transactions with success or failure
+	 *         status.
+	 */
 	@Override
 	public UserTransactionResponseDto findMortgageTransactions(Integer userAccountId) {
+		logger.info("get all mortgage account transaction summary...");
 		List<UserTransaction> transactions = userTransactionRepository
-				.findAllByUserAccountIdIdOrPayeeAccountIdIdOrderByIdDesc(userAccountId, userAccountId);		
+				.findAllByUserAccountIdIdOrPayeeAccountIdIdOrderByIdDesc(userAccountId, userAccountId);
 
 		return convertUserTransactionEntityToMortgage(transactions);
 	}
-	
-	private UserTransactionResponseDto convertUserTransactionEntityToMortgage(
-			List<UserTransaction> transactions) {
+
+	/**
+	 * @description here we are converting the transaction records to responseDto
+	 *              based on the required param values.
+	 * @param transactions list of the transactions
+	 * @return list of the transactions we can converted into single responseDto
+	 *         based retuired params only.
+	 */
+	private UserTransactionResponseDto convertUserTransactionEntityToMortgage(List<UserTransaction> transactions) {
+		logger.info("converting the transaction to transaction dto...");
 		UserTransactionResponseDto responseDto = new UserTransactionResponseDto();
 		List<UserTransactionRequestDto> list = new ArrayList<>();
 		transactions.forEach(transaction -> {
-			 
+
 			UserAccount userAccount = transaction.getPayeeAccountId();
-			if(userAccount.getAccountType().equals(AppConstant.ACCOUNT_TYPE_MORTGAGE)) {
-				
+			if (userAccount.getAccountType().equals(AppConstant.ACCOUNT_TYPE_MORTGAGE)) {
+
 				UserTransactionRequestDto obj = new UserTransactionRequestDto();
 				Optional<User> user = userRepository.findById(transaction.getPayeeAccountId().getUserId());
 				if (user.isPresent()) {
@@ -147,26 +174,25 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 				list.add(obj);
 			}
 		});
-		
-		if(list.isEmpty()) {
+
+		if (list.isEmpty()) {
 			responseDto.setMessage(AppConstant.NO_RECORD_FOUND);
-		}else {
+		} else {
 			responseDto.setMessage(AppConstant.OPERATION_SUCCESS);
 		}
 		responseDto.setTransactionDetails(list);
 		responseDto.setStatusCode(HttpStatus.OK.value());
 		return responseDto;
 	}
-	
-	
-	
 
 	/**
-	 * get the transaction number
+	 * @description get the transaction number based on the unique alphanumeric
+	 *              values.
 	 * 
-	 * @return
+	 * @return return the string value of the generated transaction number.
 	 */
 	public String getTransactionNumber() {
+		logger.info("get the transaction number...");
 		Integer transactionId = CommonUtil.getTransactionNumber();
 		String transactionNumber = AppConstant.GET_TRANSACTION_NO_PREFIX + transactionId;
 
@@ -190,24 +216,23 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 		logger.info("to get monthly transactions");
 
 		String inputMonth = String.format("%02d", month);
-
 		LocalDate startDate = LocalDate.parse(year + "-" + inputMonth + "-" + "01");
 		LocalDate endDate = Year.parse(year.toString()).atMonth(year).atEndOfMonth();
-
 		List<UserTransaction> userTransactionResponse = userTransactionRepository
 				.getAllByUserAccountIdAndTransactionDateBetween(userAccountId, startDate, endDate);
-
 		return convertUserTransactionEntityToUserTransactionResponseDto(userTransactionResponse);
 	}
 
 	/**
-	 * this is private method it is used for Entity to DtoResponse converts -
-	 * written in single separate method for code re-use
-	 * 
-	 * @return UserTransactionResponseDto
+	 * @description this is private method it is used for Entity to DtoResponse
+	 *              converts - written in single separate method for code re-use
+	 * @param list of transaction entitries
+	 * @return UserTransactionResponseDto values are response required values only
+	 *         sended.
 	 */
 	private UserTransactionResponseDto convertUserTransactionEntityToUserTransactionResponseDto(
 			List<UserTransaction> userTransactionResponse) {
+		logger.info("convert the user transaction to responseDto...");
 
 		UserTransactionResponseDto userTransactionResponseDto = new UserTransactionResponseDto();
 		List<UserTransactionRequestDto> response = new ArrayList<>();

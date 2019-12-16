@@ -23,7 +23,7 @@ import com.banking.repository.UserRepository;
  *              create mortgage account for the requested users if and only if
  *              user contain already contains savings account
  * @author akuthota.raghu
- * 
+ * @since 14-12-2019
  */
 
 @Service
@@ -38,7 +38,7 @@ public class MortgageServiceImpl implements MortgageService {
 	UserAccountRepository userAccountRepository;
 
 	/**
-	 * This method will create the mortgage accounts
+	 * @descripion This method will create the mortgage accounts
 	 * 
 	 * @param MortgageRequestDto object contains set of properties
 	 * @return MortgageResponseDto object contains set of properties
@@ -63,9 +63,8 @@ public class MortgageServiceImpl implements MortgageService {
 			mortgageAccount.setBalanceAmount(-mortgageRequestDto.getPropertyValue());
 			mortgageAccount.setCreatedDate(LocalDateTime.now());
 
+			LOGGER.debug("Created mortgage account for the requested user");
 			userAccountRepository.save(mortgageAccount);
-
-			LOGGER.info("Created mortgage account for the requested user");
 
 			responseDto.setMessage(AppConstant.SUCCESS);
 			responseDto.setStatus(AppConstant.MORTGAGE_ACCOUNT_CREATED);
