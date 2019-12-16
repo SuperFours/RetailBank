@@ -13,6 +13,8 @@ import com.banking.dto.MortgageRequestDto;
 import com.banking.dto.ResponseDto;
 import com.banking.service.MortgageService;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @description This controller is used to for creating and do the operations
  *              for mortgage for the existing savings account holder
@@ -24,6 +26,7 @@ import com.banking.service.MortgageService;
 @RestController
 @CrossOrigin(allowedHeaders = { "*", "*/" }, origins = { "*", "*/" })
 @RequestMapping("/mortgageaccounts")
+@Slf4j
 public class MortgageController {
 
 	@Autowired
@@ -37,6 +40,7 @@ public class MortgageController {
 	 */
 	@PostMapping
 	public ResponseEntity<ResponseDto> createMortgageaccount(@RequestBody MortgageRequestDto mortgageRequestDto) {
+		log.info("creating mortgage account to the savings accounts");
 		ResponseDto responseDto = mortgageService.createMortgageAccount(mortgageRequestDto);
 		if (responseDto != null) {
 			responseDto.setStatusCode(HttpStatus.OK.value());

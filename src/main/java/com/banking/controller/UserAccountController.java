@@ -18,10 +18,12 @@ import com.banking.dto.UserAccountResponseDto;
 import com.banking.dto.ViewPayeeDto;
 import com.banking.service.UserAccountService;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
- * User Account Controller - User account controller -> get the all payee list,
- * get the user account balances and search by the partial account number for
- * all account numbers
+ * @description User Account Controller - User account controller -> get the all
+ *              payee list, get the user account balances and search by the
+ *              partial account number for all account numbers
  * 
  * @author Govindasamy.C
  * @since 05-12-2019
@@ -30,32 +32,40 @@ import com.banking.service.UserAccountService;
 @RestController
 @RequestMapping("/users/accounts")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-
+@Slf4j
 public class UserAccountController {
 
 	@Autowired
 	private UserAccountService userAccountService;
 
 	/**
-	 * @description - get the payee list based on the user login account number.
+	 * @description - get the payee list based on the user login account number.We
+	 *              sent the accountId as pathvariable it will check all the
+	 *              accounts.If it is payee accounts it will show the list to the
+	 *              user.
 	 * 
 	 * @param user login accountId
 	 * @return list of the viewpayee details through the viewpayeedto object.
 	 */
+
 	@GetMapping("/{accountId}")
 	public ResponseEntity<List<ViewPayeeDto>> getAllPayees(@PathVariable Integer accountId) {
+		log.info("getting all payees accounts");
 		List<ViewPayeeDto> viewPayeeDtos = userAccountService.getAllPayees(accountId);
 		return new ResponseEntity<>(viewPayeeDtos, HttpStatus.OK);
 	}
 
 	/**
-	 * @description get the user account balance by login user account.
+	 * @description get the user account balance by login user account.user can see
+	 *              the available balance for their account.
 	 * 
 	 * @param accountId for login user account
 	 * @return accountId and account balance through the accountBalanceDto.
 	 */
+
 	@GetMapping("/{accountId}/balances")
 	public ResponseEntity<AccountBalanceDto> getUserAvailableBalance(@PathVariable Integer accountId) {
+		log.info("getting user available balance  from the savings account");
 		AccountBalanceDto accountDto = userAccountService.getAccountBalance(accountId);
 		return new ResponseEntity<>(accountDto, HttpStatus.OK);
 	}
@@ -68,6 +78,7 @@ public class UserAccountController {
 	 */
 	@GetMapping("/search/{accountNumber}")
 	public ResponseEntity<UserAccountResponseDto> searchSavingAccounts(@PathVariable String accountNumber) {
+		log.info("searching savings accounts");
 		UserAccountResponseDto userAccountResponseDto = new UserAccountResponseDto();
 		List<UserAccountDto> userAccounts = userAccountService.getAccounts(accountNumber);
 		userAccountResponseDto.setUserAccounts(userAccounts);

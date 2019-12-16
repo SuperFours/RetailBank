@@ -19,9 +19,11 @@ import com.banking.dto.RegisterResponseDto;
 import com.banking.service.UserService;
 
 /**
- * This is the User controller it has 1 method that relate to the user.
+ * @description This is the User controller in that user registeration is
+ *              implemented to register the user to the retail bank
+ *              application.It will allow the user can register the application.
  * 
- * @author Janani
+ * @author Janani.V
  * @since 05-12-2019
  */
 
@@ -35,10 +37,15 @@ public class UserController {
 	UserService userService;
 
 	/**
-	 * To register the user.
+	 * @description Register user method is used for register the user to start the
+	 *              application . In that we used RegisterRequestDto as requestbody
+	 *              it having fields to enough for the registeration purpose.All
+	 *              field was valid with the annotation called @valid.
 	 * 
-	 * @param userRegisterDto
-	 * @return
+	 * @param userRegisterDto class having fields for the register user.
+	 * @return RegisterResponseDto it has status message and status code for the
+	 *         register method.if it is not correct we will sent bad request to the
+	 *         user.
 	 */
 	@PostMapping
 	public ResponseEntity<RegisterResponseDto> registerUser(@Valid @RequestBody RegisterRequestDto userRegisterDto) {
