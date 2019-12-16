@@ -25,8 +25,9 @@ public class ConverterUtil {
 	/**
 	 * convert the FundTransferRequestDto values to UserTransaction entity.
 	 * 
-	 * @param fundTransferRequestDto
-	 * @return UserTransaction object
+	 * @param fundTransferRequestDto params values are accountId and payeeAccountId
+	 *                               with transaction amount.
+	 * @return user transaction object values.
 	 */
 	public static UserTransaction convertDtoToTransactionEntity(FundTransferRequestDto fundTransferRequestDto) {
 		UserTransaction userTransaction = new UserTransaction();
@@ -38,11 +39,20 @@ public class ConverterUtil {
 		return userTransaction;
 	}
 
+	/**
+	 * @description convert the user account and user values to viewpayeedto
+	 *              details.
+	 * @param userAccount entity values.
+	 * @param user entity object values.
+	 * @return viewpayeedto values are set the accountType, accountId, accountnumber
+	 *         and payeename.
+	 */
 	public static ViewPayeeDto convertTransactionToPayeeDto(UserAccount userAccount, User user) {
 		ViewPayeeDto viewPayeeDto = new ViewPayeeDto();
+		viewPayeeDto.setAccountType(userAccount.getAccountType());
 		viewPayeeDto.setAccountId(userAccount.getId());
 		viewPayeeDto.setAccountNumber(userAccount.getAccountNumber());
-		viewPayeeDto.setPayeeName(user.getFirstName() + " " + user.getLastName());
+		viewPayeeDto.setPayeeName(user.getFirstName());
 		return viewPayeeDto;
 	}
 }

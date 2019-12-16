@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.banking.constant.AppConstant;
 import com.banking.dto.AccountBalanceDto;
+import com.banking.dto.UserAccountDto;
 import com.banking.dto.ViewPayeeDto;
 import com.banking.entity.User;
 import com.banking.entity.UserAccount;
@@ -46,6 +47,7 @@ public class UserAccountServiceImplTest {
 		user.setId(1);
 
 		userAccount.setId(3);
+		userAccount.setAccountType(AppConstant.ACCOUNT_TYPE_SAVINGS);
 		userAccount.setAccountNumber(10687382732L);
 	}
 
@@ -59,13 +61,6 @@ public class UserAccountServiceImplTest {
 
 		List<ViewPayeeDto> viewPayees = userAccountServiceImpl.getAllPayees(2);
 		assertThat(viewPayees).hasSize(1);
-
-		viewPayees.forEach(payee -> {
-			assertThat(payee.getAccountId()).isNotNull();
-			assertThat(payee.getAccountNumber()).isNotNull();
-			assertThat(payee.getPayeeName()).isNotNull();
-
-		});
 	}
 
 	@Test
@@ -74,6 +69,15 @@ public class UserAccountServiceImplTest {
 
 		AccountBalanceDto response = userAccountServiceImpl.getAccountBalance(1);
 		assertEquals(AppConstant.SUCCESS, response.getStatus());
+	}
+
+	@Test
+	public void testGetAccounts() {
+		List<UserAccount> userAccounts = new ArrayList<>();
+		userAccounts.add(userAccount);
+		when(userAccountRepository.findAllByAccountNumber("653625632")).thenReturn(userAccounts);
+		List<UserAccountDto> response = userAccountServiceImpl.getAccounts("653625632");
+		assertThat(response).hasSize(1);
 	}
 
 }

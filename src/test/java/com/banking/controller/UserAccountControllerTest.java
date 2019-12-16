@@ -18,6 +18,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.banking.constant.AppConstant;
 import com.banking.dto.AccountBalanceDto;
+import com.banking.dto.UserAccountDto;
+import com.banking.dto.UserAccountResponseDto;
 import com.banking.dto.ViewPayeeDto;
 import com.banking.service.UserAccountService;
 
@@ -43,16 +45,29 @@ public class UserAccountControllerTest {
 		ResponseEntity<List<ViewPayeeDto>> response = userAccountController.getAllPayees(1);
 		assertThat(response.getBody()).hasSize(0);
 	}
-	
+
 	@Test
 	public void testGetUserAvailableBalance() {
 		AccountBalanceDto accountBalanceDto = new AccountBalanceDto();
 		accountBalanceDto.setAccountBalance(1000.00);
 		accountBalanceDto.setStatus(AppConstant.SUCCESS);
 		when(userAccountService.getAccountBalance(1)).thenReturn(accountBalanceDto);
-		
+
 		ResponseEntity<AccountBalanceDto> response = userAccountController.getUserAvailableBalance(1);
 		assertEquals(accountBalanceDto.getAccountBalance(), response.getBody().getAccountBalance());
+	}
+
+	@Test
+	public void testSearchSavingAccounts() {
+		List<UserAccountDto> accounts = new ArrayList<>();
+		UserAccountDto userAccountDto = new UserAccountDto();
+		userAccountDto.setUserName("Moorthy");
+		accounts.add(userAccountDto);
+
+		when(userAccountService.getAccounts("156727783738384")).thenReturn(accounts);
+
+		ResponseEntity<UserAccountResponseDto> resposne = userAccountController.searchSavingAccounts("156727783738384");
+		assertEquals(AppConstant.SUCCESS, resposne.getBody().getMessage());
 	}
 
 }

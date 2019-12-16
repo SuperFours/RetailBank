@@ -13,4 +13,6 @@ public interface UserTransactionService {
 	public UserTransactionResponseDto findUserTransactionsByMonth(Integer userAccountId, Integer month, Integer year);
 
 	public UserTransactionResponseDto findRecentFiveTransactions(Integer userAccountId);
+	
+	public UserTransactionResponseDto findMortgageTransactions(Integer userAccountId);
 }

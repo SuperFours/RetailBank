@@ -2,7 +2,6 @@ package com.banking.service;
 
 import java.time.LocalDate;
 import java.time.Year;
-import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -116,6 +115,51 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 
 		return convertUserTransactionEntityToUserTransactionResponseDto(userTransactionResponse);
 	}
+	
+	@Override
+	public UserTransactionResponseDto findMortgageTransactions(Integer userAccountId) {
+		List<UserTransaction> transactions = userTransactionRepository
+				.findAllByUserAccountIdIdOrPayeeAccountIdIdOrderByIdDesc(userAccountId, userAccountId);		
+
+		return convertUserTransactionEntityToMortgage(transactions);
+	}
+	
+	private UserTransactionResponseDto convertUserTransactionEntityToMortgage(
+			List<UserTransaction> transactions) {
+		UserTransactionResponseDto responseDto = new UserTransactionResponseDto();
+		List<UserTransactionRequestDto> list = new ArrayList<>();
+		transactions.forEach(transaction -> {
+			 
+			UserAccount userAccount = transaction.getPayeeAccountId();
+			if(userAccount.getAccountType().equals(AppConstant.ACCOUNT_TYPE_MORTGAGE)) {
+				
+				UserTransactionRequestDto obj = new UserTransactionRequestDto();
+				Optional<User> user = userRepository.findById(transaction.getPayeeAccountId().getUserId());
+				if (user.isPresent()) {
+					obj.setPayeeName(user.get().getFirstName() + " " + user.get().getLastName());
+				}
+				obj.setRemarks(transaction.getRemarks());
+				obj.setPayeeAccountNumber(transaction.getPayeeAccountId().getAccountNumber());
+				obj.setTransactionType(transaction.getTransactionType());
+				obj.setTransactionDate(transaction.getTransactionDate());
+				obj.setBalanceAmount(transaction.getPayeeAccountId().getBalanceAmount());
+				obj.setTransactionAmount(transaction.getTransactionAmount());
+				list.add(obj);
+			}
+		});
+		
+		if(list.isEmpty()) {
+			responseDto.setMessage(AppConstant.NO_RECORD_FOUND);
+		}else {
+			responseDto.setMessage(AppConstant.OPERATION_SUCCESS);
+		}
+		responseDto.setTransactionDetails(list);
+		responseDto.setStatusCode(HttpStatus.OK.value());
+		return responseDto;
+	}
+	
+	
+	
 
 	/**
 	 * get the transaction number
@@ -146,9 +190,8 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 		logger.info("to get monthly transactions");
 
 		String inputMonth = String.format("%02d", month);
-		YearMonth yearMonth = Year.parse(year.toString()).atMonth(month);
 
-		LocalDate startDate = LocalDate.parse(yearMonth + "-" + inputMonth + "-" + "01");
+		LocalDate startDate = LocalDate.parse(year + "-" + inputMonth + "-" + "01");
 		LocalDate endDate = Year.parse(year.toString()).atMonth(year).atEndOfMonth();
 
 		List<UserTransaction> userTransactionResponse = userTransactionRepository

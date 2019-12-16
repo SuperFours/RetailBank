@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.banking.constant.AppConstant;
-import com.banking.dto.RegisterResponseDto;
 import com.banking.dto.RegisterRequestDto;
+import com.banking.dto.RegisterResponseDto;
 import com.banking.service.UserService;
 
 /**

@@ -83,6 +83,11 @@ public class UserTransactionController {
 	public UserTransactionResponseDto getRecentFiveTransactions(@PathVariable Integer userAccountId) {
 		return userTransactionService.findRecentFiveTransactions(userAccountId);
 	}
+	
+	@GetMapping("mortgageaccounts/{userAccountId}")
+	public UserTransactionResponseDto getMortgageTransactions(@PathVariable Integer userAccountId) {
+		return userTransactionService.findMortgageTransactions(userAccountId);
+	}
 
 	/*
 	 * This method is used for to get recent 5 transactions

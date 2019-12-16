@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 import com.banking.constant.AppConstant;
 import com.banking.dto.MortgageRequestDto;
 import com.banking.dto.ResponseDto;
+import com.banking.entity.User;
 import com.banking.entity.UserAccount;
-import com.banking.repository.MortgageRepository;
 import com.banking.repository.UserAccountRepository;
 import com.banking.repository.UserRepository;
 
@@ -32,9 +32,6 @@ public class MortgageServiceImpl implements MortgageService {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MortgageServiceImpl.class);
 
 	@Autowired
-	MortgageRepository mortgageRepository;
-
-	@Autowired
 	UserRepository userRepository;
 
 	@Autowired
@@ -46,42 +43,45 @@ public class MortgageServiceImpl implements MortgageService {
 	 * @param MortgageRequestDto object contains set of properties
 	 * @return MortgageResponseDto object contains set of properties
 	 */
-
 	@Override
 	public ResponseDto createMortgageAccount(MortgageRequestDto mortgageRequestDto) {
 		LOGGER.info("Creating mortgage account start for requested user");
 		ResponseDto responseDto = new ResponseDto();
-		Optional<UserAccount> userResponse = userAccountRepository.findByAccountNumberAndAccountType(
-				mortgageRequestDto.getAccountNumber(), AppConstant.ACCOUNT_TYPE_MORTGAGE);
-		if (!userResponse.isPresent()) {
-			Optional<UserAccount> userAccount = userAccountRepository.findById(mortgageRequestDto.getUserId());
-			if (userAccount.isPresent()) {
+		Optional<UserAccount> userAccount = userAccountRepository
+				.findByUserIdAndAccountType(mortgageRequestDto.getUserId(), AppConstant.ACCOUNT_TYPE_MORTGAGE);
+		if (!userAccount.isPresent()) {
 
-				UserAccount mortgageAccount = new UserAccount();
-
-				Long accountNumber = generateAccountNumber();
-				mortgageAccount.setAccountNumber(accountNumber);
-				mortgageAccount.setUserId(userAccount.get().getUserId());
-				mortgageAccount.setAccountType(AppConstant.ACCOUNT_TYPE_MORTGAGE);
-				mortgageAccount.setBalanceAmount(AppConstant.ACCOUNT_BALANCE_AMOUNT);
-				mortgageAccount.setCreatedDate(LocalDateTime.now());
-
-				userAccountRepository.save(mortgageAccount);
-
-				LOGGER.info("Created mortgage account for the requested user");
-
-				responseDto.setMessage(AppConstant.SUCCESS);
-				responseDto.setStatus(AppConstant.MORTGAGE_ACCOUNT_CREATED);
-			} else {
-				responseDto.setMessage(AppConstant.FAILURE);
-				responseDto.setStatusCode(HttpStatus.NOT_FOUND.value());
-				responseDto.setStatus(AppConstant.USER_MORTGAGE_ACCOUNT_EXIST);
-				LOGGER.info("User Mortgage Account is already exist ");
+			UserAccount mortgageAccount = new UserAccount();
+			Optional<User> user = userRepository.findById(mortgageRequestDto.getUserId());
+			if (user.isPresent()) {
+				mortgageAccount.setUserId(user.get().getId());
 			}
+
+			Long accountNumber = generateAccountNumber();
+			mortgageAccount.setAccountNumber(accountNumber);
+			mortgageAccount.setAccountType(AppConstant.ACCOUNT_TYPE_MORTGAGE);
+			mortgageAccount.setBalanceAmount(-mortgageRequestDto.getPropertyValue());
+			mortgageAccount.setCreatedDate(LocalDateTime.now());
+
+			userAccountRepository.save(mortgageAccount);
+
+			LOGGER.info("Created mortgage account for the requested user");
+
+			responseDto.setMessage(AppConstant.SUCCESS);
+			responseDto.setStatus(AppConstant.MORTGAGE_ACCOUNT_CREATED);
+		} else {
+			responseDto.setMessage(AppConstant.FAILURE);
+			responseDto.setStatusCode(HttpStatus.NOT_FOUND.value());
+			responseDto.setStatus(AppConstant.USER_MORTGAGE_ACCOUNT_EXIST);
+			LOGGER.info("User Mortgage Account is already exist ");
 		}
 		return responseDto;
 	}
 
+	/**
+	 * @description get the generated account number.
+	 * @return Long value of account number
+	 */
 	private Long generateAccountNumber() {
 		String number = RandomStringUtils.random(16, false, true);
 		return Long.valueOf(number);

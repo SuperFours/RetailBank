@@ -3,7 +3,8 @@ package com.banking.util;
 import java.util.Random;
 
 /**
- * Common Util - Util class for common meothods we can implement here.
+ * @description CommonUtil - get the common static methods implemeneted in the
+ *              util class.
  * 
  * @author Govindasamy.C
  * @since : 27-11-2019
@@ -15,10 +16,8 @@ public class CommonUtil {
 	}
 
 	/**
-	 * calculate the average value by ratings.
-	 * 
-	 * @param -> list of the Integer ratings.
-	 * @return Here returning the response value as double.
+	 * @description get the transaction number by generated new value.
+	 * @return the Integer value by the generated new transaction number.
 	 */
 	public static Integer getTransactionNumber() {
 		Random r = new Random(System.currentTimeMillis());

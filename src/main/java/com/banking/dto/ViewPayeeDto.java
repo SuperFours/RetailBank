@@ -13,6 +13,7 @@ import lombok.Setter;
 public class ViewPayeeDto {
 
 	private Integer accountId;
+	private String accountType;
 	private Long accountNumber;
 	private String payeeName;
 

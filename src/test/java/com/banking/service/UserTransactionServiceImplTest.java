@@ -72,12 +72,14 @@ public class UserTransactionServiceImplTest {
 		userAccount.setBalanceAmount(10000.00);
 		userAccount.setMinimumBalance(1000.00);
 		userAccount.setCreatedDate(LocalDateTime.now());
+		userAccount.setAccountType(AppConstant.ACCOUNT_TYPE_MORTGAGE);
 
 		userTransaction1.setTransactionAmount(2500.00);
 		userTransaction1.setPayeeAccountId(userAccount);
 		userTransaction1.setId(1231231);
 		userTransaction1.setTransactionDate(LocalDate.of(2019, 12, 04));
 		userTransaction1.setTransactionType("SAVING");
+		
 
 		userTransaction2.setTransactionAmount(2500.00);
 		userTransaction2.setPayeeAccountId(userAccount);
@@ -85,7 +87,7 @@ public class UserTransactionServiceImplTest {
 		userTransaction2.setTransactionDate(LocalDate.of(2019, 12, 04));
 		userTransaction2.setTransactionType("SAVING");
 
-		userTransactions.add(0, userTransaction1);
+		userTransactions.add(userTransaction1);
 	}
 
 	@Test
@@ -168,5 +170,13 @@ public class UserTransactionServiceImplTest {
 				.getAllByUserAccountIdAndTransactionDateBetween(userAccount.getId(), LocalDate.of(2019, 12, 01), LocalDate.of(2019, 12, 31));
 		Assert.assertNotNull(userTransactions);
 		Assert.assertEquals(1, userTransactions.size());
+	}
+	
+	@Test
+	public void testFindMortgageTransactions() {
+		
+		when(userTransactionRepository.findAllByUserAccountIdIdOrPayeeAccountIdIdOrderByIdDesc(1, 1)).thenReturn(userTransactions);
+		UserTransactionResponseDto response = userTransactionServiceImpl.findMortgageTransactions(1);
+		assertEquals(AppConstant.OPERATION_SUCCESS, response.getMessage());
 	}
 }

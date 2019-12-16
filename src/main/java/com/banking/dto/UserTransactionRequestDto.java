@@ -26,6 +26,7 @@ public class UserTransactionRequestDto {
 	private Long payeeAccountNumber;
 	private String transactionType;
 	private LocalDate transactionDate;
+	private Double balanceAmount;
 	private Double transactionAmount;
 	private String remarks;
 

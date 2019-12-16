@@ -3,6 +3,8 @@ package com.banking.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,7 +56,8 @@ public class LoginServiceImplTest {
 	public void testLogin() {
 		when(userRepository.findUserByUserNameAndPassword(loginDto.getUserName(), loginDto.getPassword()))
 				.thenReturn(user);
-		when(userAccountRepository.findByUserId(user.getId())).thenReturn(userAccount);
+		when(userAccountRepository.findByUserIdAndAccountType(user.getId(), AppConstant.ACCOUNT_TYPE_SAVINGS))
+				.thenReturn(Optional.of(userAccount));
 		LoginResponseDto response = loginServiceImpl.login(loginDto);
 		assertEquals(AppConstant.SUCCESS, response.getStatus());
 	}

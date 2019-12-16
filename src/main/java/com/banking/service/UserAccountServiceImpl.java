@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import com.banking.constant.AppConstant;
 import com.banking.dto.AccountBalanceDto;
 import com.banking.dto.UserAccountDto;
-import com.banking.dto.UserAccountResponseDto;
 import com.banking.dto.ViewPayeeDto;
 import com.banking.entity.User;
 import com.banking.entity.UserAccount;
@@ -24,8 +23,10 @@ import com.banking.util.ConverterUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * UserAccountServiceImpl class - we can implementing the user account service
- * methods.
+ * @description UserAccountServiceImpl class - we can implementing the user
+ *              account service methods of get all payee details, get account
+ *              balance based on accountId, get all accounts by admin search
+ *              value.
  * 
  * @author Govindasamy.C
  * @since 05-12-2019
@@ -40,6 +41,12 @@ public class UserAccountServiceImpl implements UserAccountService {
 	@Autowired
 	private UserRepository userRepository;
 
+	/**
+	 * @description - get the payee list based on the user login account number.
+	 * 
+	 * @param user login accountId
+	 * @return list of the viewpayee details through the viewpayeedto object.
+	 */
 	@Override
 	public List<ViewPayeeDto> getAllPayees(Integer accountId) {
 		List<ViewPayeeDto> viewPayeeDtos = new ArrayList<>();
@@ -54,7 +61,10 @@ public class UserAccountServiceImpl implements UserAccountService {
 	}
 
 	/**
-	 * get the user account balances.
+	 * @description get the user account balance by login user account.
+	 * 
+	 * @param accountId for login user account
+	 * @return accountId and account balance through the accountBalanceDto.
 	 */
 	@Override
 	public AccountBalanceDto getAccountBalance(Integer userAccountId) {
@@ -73,35 +83,38 @@ public class UserAccountServiceImpl implements UserAccountService {
 		}
 		return accountBalanceDto;
 	}
-	
-	
 
+	/**
+	 * @description search by partial account numbers and get the list of all
+	 *              accounts based on search value.
+	 * @param accountNumber admin search input value.
+	 * @return list of account details by UserAccountResponseDto object.
+	 */
 	@Override
 	public List<UserAccountDto> getAccounts(String accountNumber) {
-		List<UserAccountDto> userAccountDto = new ArrayList<>();
 		List<UserAccount> userAccounts = userAccountRepository.findAllByAccountNumber(accountNumber);
-		userAccountDto = userAccounts.stream()
-				.filter(account -> !account.getAccountType().equalsIgnoreCase(AppConstant.MORTGAGE))
-				.map(this::convertEntityToDto)
-				.collect(Collectors.toList());
-		return userAccountDto;
+		return userAccounts.stream()
+				.filter(account -> !account.getAccountType().equalsIgnoreCase(AppConstant.ACCOUNT_TYPE_MORTGAGE))
+				.map(this::convertEntityToDto).collect(Collectors.toList());
 	}
-	
+
 	/**
-	 * 
-	 * @param userAccount
+	 * @description convert the useraccount entity values to useraccountDto object
+	 *              values based on the response.
+	 * @param userAccount params of useraccount entity
 	 * @return
 	 */
 	private UserAccountDto convertEntityToDto(UserAccount userAccount) {
-		log.info("converting UserAccount to UserAccountResponseDto" );
-		UserAccountDto userAccountDto=new UserAccountDto();
+		log.info("converting UserAccount to UserAccountResponseDto");
+		UserAccountDto userAccountDto = new UserAccountDto();
 		BeanUtils.copyProperties(userAccount, userAccountDto);
 		Optional<User> user = userRepository.findById(userAccount.getUserId());
-		if(user.isPresent()) {
+		if (user.isPresent()) {
+			userAccountDto.setUserId(user.get().getId());
 			userAccountDto.setUserName(user.get().getFirstName().concat(" ").concat(user.get().getLastName()));
 		}
 		return userAccountDto;
-		
+
 	}
 
 }

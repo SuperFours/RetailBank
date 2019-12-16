@@ -19,8 +19,9 @@ import com.banking.dto.ViewPayeeDto;
 import com.banking.service.UserAccountService;
 
 /**
- * User Account Controller - User account controller -> get the all payee list
- * and get the user account balances.
+ * User Account Controller - User account controller -> get the all payee list,
+ * get the user account balances and search by the partial account number for
+ * all account numbers
  * 
  * @author Govindasamy.C
  * @since 05-12-2019
@@ -36,10 +37,10 @@ public class UserAccountController {
 	private UserAccountService userAccountService;
 
 	/**
-	 * get the payee list
+	 * @description - get the payee list based on the user login account number.
 	 * 
-	 * @param accountId
-	 * @return
+	 * @param user login accountId
+	 * @return list of the viewpayee details through the viewpayeedto object.
 	 */
 	@GetMapping("/{accountId}")
 	public ResponseEntity<List<ViewPayeeDto>> getAllPayees(@PathVariable Integer accountId) {
@@ -48,10 +49,10 @@ public class UserAccountController {
 	}
 
 	/**
-	 * get the user account balances.
+	 * @description get the user account balance by login user account.
 	 * 
-	 * @param accountId
-	 * @return
+	 * @param accountId for login user account
+	 * @return accountId and account balance through the accountBalanceDto.
 	 */
 	@GetMapping("/{accountId}/balances")
 	public ResponseEntity<AccountBalanceDto> getUserAvailableBalance(@PathVariable Integer accountId) {
@@ -60,9 +61,10 @@ public class UserAccountController {
 	}
 
 	/**
-	 * 
-	 * @param accountNumber
-	 * @return
+	 * @description search by partial account numbers and get the list of all
+	 *              accounts based on search value.
+	 * @param accountNumber admin search input value.
+	 * @return list of account details by UserAccountResponseDto object.
 	 */
 	@GetMapping("/search/{accountNumber}")
 	public ResponseEntity<UserAccountResponseDto> searchSavingAccounts(@PathVariable String accountNumber) {
@@ -70,9 +72,9 @@ public class UserAccountController {
 		List<UserAccountDto> userAccounts = userAccountService.getAccounts(accountNumber);
 		userAccountResponseDto.setUserAccounts(userAccounts);
 		userAccountResponseDto.setStatusCode(HttpStatus.OK.value());
-		if(userAccounts.isEmpty()) {
+		if (userAccounts.isEmpty()) {
 			userAccountResponseDto.setMessage(AppConstant.NO_RECORD_FOUND);
-		}else {
+		} else {
 			userAccountResponseDto.setMessage(AppConstant.SUCCESS);
 		}
 		return new ResponseEntity<>(userAccountResponseDto, HttpStatus.OK);

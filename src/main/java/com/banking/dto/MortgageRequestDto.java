@@ -17,6 +17,5 @@ public class MortgageRequestDto implements Serializable {
 	
 	private Integer userId;
 	private String accountType;
-	private Long accountNumber;
-	private Double minimumBalance;
+	private Double propertyValue;
 }

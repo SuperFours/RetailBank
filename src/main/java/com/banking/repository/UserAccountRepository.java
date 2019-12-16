@@ -16,10 +16,12 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Intege
 	UserAccount findByUserId(Integer userId);
 
 	List<UserAccount> findAllByIdNot(Integer accountId);
-	
+
 	@Query("Select u from UserAccount u WHERE CAST(u.accountNumber AS string) LIKE %:accountNumber%")
 	List<UserAccount> findAllByAccountNumber(@Param("accountNumber") String accountNumber);
 
 	Optional<UserAccount> findByAccountNumberAndAccountType(Long accountNumber, String accountTypeMortgage);
+
+	Optional<UserAccount> findByUserIdAndAccountType(Integer userId, String accountTypeMortgage);
 
 }

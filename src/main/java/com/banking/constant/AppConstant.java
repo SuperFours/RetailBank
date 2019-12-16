@@ -1,12 +1,16 @@
 package com.banking.constant;
 
 /**
- * Constants - unique const values are maintaining here.
- * 
- * @author Govindasamy.C
- * @since 05-12-2019
+ * @description AppConstant is used for only we are maintaining the argcoded
+ *              values in the whole application.
+ * @author Janani.V
+ * @since 14-12-2019
  */
-public final class AppConstant {
+public class AppConstant {
+	
+	private AppConstant() {
+
+	}
 
 	// Httpstatus success and failure messages for common.
 	public static final String SUCCESS = "SUCCESS";
@@ -32,6 +36,7 @@ public final class AppConstant {
 	public static final String OPERATION_FAILD = "Operation Failed";
 
 	// User Registration
+	public static final Double ZERO_MINIMUM_BALANCE = 0.00;
 	public static final Double ACCOUNT_MINIMUM_BALANCE = 500.00;
 	public static final Double ACCOUNT_BALANCE_AMOUNT = 20000.00;
 	public static final String FIRST_NAME_ERROR_MESSAGE = "firstName should be mandatory";
@@ -50,18 +55,10 @@ public final class AppConstant {
 	public static final String USER_NOT_FOUND = "No Users Found";
 	public static final String AGE_ERROR_MESSAGE = "User should not have less than 18 years to open account";
 
-	//getAccount Number
-	public static final String SAVINGS = "saving";
-	public static final String MORTGAGE = "mortgage";
-	
-	//Martgage account
+	// Account Type
 	public static final String ACCOUNT_TYPE_SAVINGS = "Savings";
 	public static final String ACCOUNT_TYPE_MORTGAGE = "Mortgage";
-	
+
 	public static final String MORTGAGE_ACCOUNT_CREATED = "Mortgage account is created successfully";
 	public static final String USER_MORTGAGE_ACCOUNT_EXIST = "User Mortgage Account already exist";
-
-	
-
-	
 }

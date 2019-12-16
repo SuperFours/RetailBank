@@ -1,5 +1,7 @@
 package com.banking.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,11 +36,13 @@ public class LoginServiceImpl implements LoginService {
 		LoginResponseDto loginResponseDto = new LoginResponseDto();
 		User user = userRepository.findUserByUserNameAndPassword(loginDto.getUserName(), loginDto.getPassword());
 		if (user != null) {
-			UserAccount userAccount = userAccountRepository.findByUserId(user.getId());
-			loginResponseDto.setAccountNumber(userAccount.getAccountNumber());
-			loginResponseDto.setAccountType(userAccount.getAccountType());
-			loginResponseDto.setAccountId(userAccount.getId());
-			loginResponseDto.setUserName(user.getFirstName() + " " + user.getLastName());
+			Optional<UserAccount> userAccount = userAccountRepository.findByUserIdAndAccountType(user.getId(), AppConstant.ACCOUNT_TYPE_SAVINGS);
+			if(userAccount.isPresent()) {
+				loginResponseDto.setAccountNumber(userAccount.get().getAccountNumber());
+				loginResponseDto.setAccountType(userAccount.get().getAccountType());
+				loginResponseDto.setAccountId(userAccount.get().getId());
+				loginResponseDto.setUserName(user.getFirstName() + " " + user.getLastName());
+			}
 			loginResponseDto.setStatus(AppConstant.SUCCESS);
 			loginResponseDto.setMessage(AppConstant.LOGIN_SUCCESS_MESSAGE);
 
