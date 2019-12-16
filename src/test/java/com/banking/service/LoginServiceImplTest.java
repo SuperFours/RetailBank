@@ -46,6 +46,7 @@ public class LoginServiceImplTest {
 
 		user.setId(1);
 		user.setFirstName("Moorthy");
+		user.setLastName("Govindasamy");
 
 		userAccount.setId(1);
 		userAccount.setUserId(user.getId());

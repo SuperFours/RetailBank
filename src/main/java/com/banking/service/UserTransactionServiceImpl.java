@@ -106,7 +106,7 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 				fundTransferResponseDto.setMessage(AppConstant.FUND_TRANSFER_MIN_BAL);
 			}
 		} else {
-			throw new NotFoundException("No Accounts Found.");
+			throw new NotFoundException(AppConstant.NO_ACCOUNTS_FOUND);
 		}
 
 		return fundTransferResponseDto;
@@ -185,7 +185,7 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 	}
 
 	/**
-	 * this method is to get entire month transactions to respective userAccountId
+	 * @description this method is to get entire month transactions to respective userAccountId
 	 * 
 	 * @param userAccountId Integer, month Integer, year Integer - providing
 	 *                      required account number, month and year to search
@@ -265,12 +265,13 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 	}
 
 	/**
-	 * @description This method will generate random transaction number and return
-	 *              it to method call, this method access specifier given as default
-	 *              to cover test case for this method
-	 * @return transaction number as String
+	 * @description get the transaction number based on the unique alphanumeric
+	 *              values.
+	 * 
+	 * @return return the string value of the generated transaction number.
 	 */
-	String getTransactionNumber() {
+	private String getTransactionNumber() {
+		logger.info("get the transaction number...");
 		Integer transactionId = CommonUtil.getTransactionNumber();
 		String transactionNumber = AppConstant.GET_TRANSACTION_NO_PREFIX + transactionId;
 
@@ -280,5 +281,6 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 			getTransactionNumber();
 		}
 		return transactionNumber;
+
 	}
 }

@@ -140,14 +140,6 @@ public class UserTransactionServiceImplTest {
 	}
 
 	@Test
-	public void testGetTransactionNumber() {
-		when(userTransactionRepository.findByTransactionId("T-883833")).thenReturn(new UserTransaction());
-		String transactionNumber = userTransactionServiceImpl.getTransactionNumber();
-		assertThat(transactionNumber).isNotNull();
-
-	}
-
-	@Test
 	public void testFindRecentFiveTransactions() {
 
 		User user = new User();
