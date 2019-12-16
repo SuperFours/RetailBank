@@ -17,6 +17,7 @@ public class AppConstant {
 	public static final String FAILURE = "FAILURE";
 	public static final String SUCCESS_MESSAGE = "Record Created Successfully";
 	public static final String NO_RECORD_FOUND = "No Records Found";
+	public static final String NO_ACCOUNTS_FOUND = "No Accounts Found";
 	public static final String RECORD_ALREADY_EXISTS = "Record Already Exists";
 
 	// Fund Transfer
