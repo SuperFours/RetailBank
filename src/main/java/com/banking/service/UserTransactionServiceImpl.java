@@ -196,7 +196,7 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 		
 		String inputMonth = String.format("%02d", month);
 
-		LocalDate startDate = LocalDate.parse(year + "-" + inputMonth + "-" + "01");
+		LocalDate startDate = LocalDate.parse(year + "-" + inputMonth + "-" + AppConstant.MONTH_STARTDATE);
 
 		Integer lastDayOfMonth = YearMonth.of(year, month).atEndOfMonth().getDayOfMonth();
 

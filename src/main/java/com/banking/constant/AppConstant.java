@@ -33,6 +33,7 @@ public class AppConstant {
 	public static final String GET_TRANSACTION_NO_PREFIX = "T-";
 	public static final String OPERATION_SUCCESS = "Transaction Details";
 	public static final Integer ZERO = 0;
+	public static final Integer MONTH_STARTDATE = 01;
 	public static final String OPERATION_FAILD = "Operation Failed";
 
 	// User Registration
