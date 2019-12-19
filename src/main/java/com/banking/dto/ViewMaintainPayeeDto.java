@@ -5,13 +5,11 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class LoginResponseDto extends ResponseDto {
+public class ViewMaintainPayeeDto {
 
 	private Integer accountId;
 	private String accountNumber;
-	private String accountType;
-	private String phoneNumber;
-
-	private String userName;
-
+	private String nickName;
+	private String bankName;
+	private String branchName;
 }

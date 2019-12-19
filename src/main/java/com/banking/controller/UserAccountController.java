@@ -15,7 +15,7 @@ import com.banking.constant.AppConstant;
 import com.banking.dto.AccountBalanceDto;
 import com.banking.dto.UserAccountDto;
 import com.banking.dto.UserAccountResponseDto;
-import com.banking.dto.ViewPayeeDto;
+import com.banking.dto.ViewPayeeResponseDto;
 import com.banking.service.UserAccountService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -48,10 +48,10 @@ public class UserAccountController {
 	 * @return list of the viewpayee details through the viewpayeedto object.
 	 */
 
-	@GetMapping("/{accountId}")
-	public ResponseEntity<List<ViewPayeeDto>> getAllPayees(@PathVariable Integer accountId) {
+	@GetMapping("/{userId}")
+	public ResponseEntity<ViewPayeeResponseDto> getAllPayees(@PathVariable String userId) {
 		log.info("getting all payees accounts");
-		List<ViewPayeeDto> viewPayeeDtos = userAccountService.getAllPayees(accountId);
+		ViewPayeeResponseDto viewPayeeDtos = userAccountService.getAllPayees(userId);
 		return new ResponseEntity<>(viewPayeeDtos, HttpStatus.OK);
 	}
 
@@ -82,10 +82,11 @@ public class UserAccountController {
 		UserAccountResponseDto userAccountResponseDto = new UserAccountResponseDto();
 		List<UserAccountDto> userAccounts = userAccountService.getAccounts(accountNumber);
 		userAccountResponseDto.setUserAccounts(userAccounts);
-		userAccountResponseDto.setStatusCode(HttpStatus.OK.value());
 		if (userAccounts.isEmpty()) {
+			userAccountResponseDto.setStatusCode(HttpStatus.NOT_FOUND.value());
 			userAccountResponseDto.setMessage(AppConstant.NO_RECORD_FOUND);
 		} else {
+			userAccountResponseDto.setStatusCode(HttpStatus.OK.value());
 			userAccountResponseDto.setMessage(AppConstant.SUCCESS);
 		}
 		return new ResponseEntity<>(userAccountResponseDto, HttpStatus.OK);

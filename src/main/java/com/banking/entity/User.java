@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @Description : This the user entity class ,it has 12 fields
+ * @description : This the user entity class ,it has 12 fields
  * 
  * @author Janani
  * @since 2019-12-05

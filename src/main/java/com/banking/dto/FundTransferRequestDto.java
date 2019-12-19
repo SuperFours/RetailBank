@@ -16,8 +16,7 @@ import lombok.Setter;
 public class FundTransferRequestDto {
 
 	private Integer accountId;
-	private Integer payeeAccountId;
-
+	private String payeeAccountNumber;
 	private Double transferAmount;
 	private String remarks;
 

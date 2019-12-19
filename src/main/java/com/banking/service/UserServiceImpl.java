@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.apache.commons.lang.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +33,7 @@ import com.banking.repository.UserRepository;
  *
  */
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 	public static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 

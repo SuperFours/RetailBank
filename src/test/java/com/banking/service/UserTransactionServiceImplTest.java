@@ -62,7 +62,7 @@ public class UserTransactionServiceImplTest {
 		MockitoAnnotations.initMocks(this);
 
 		fundTransferRequestDto.setAccountId(1);
-		fundTransferRequestDto.setPayeeAccountId(2);
+		fundTransferRequestDto.setPayeeAccountNumber("1663636647774");
 		fundTransferRequestDto.setTransferAmount(2000.00);
 		fundTransferRequestDto.setRemarks("For Hospital Expenses");
 
@@ -100,7 +100,7 @@ public class UserTransactionServiceImplTest {
 		Optional<UserAccount> optionalPayeeAccount = Optional.of(payeeAccount);
 
 		when(userAccountRepository.findById(fundTransferRequestDto.getAccountId())).thenReturn(optionalUserAccount);
-		when(userAccountRepository.findById(fundTransferRequestDto.getPayeeAccountId()))
+		when(userAccountRepository.findByAccountNumber(1663636647774L))
 				.thenReturn(optionalPayeeAccount);
 
 		ResponseDto response = userTransactionServiceImpl.fundTransfer(fundTransferRequestDto);
@@ -118,7 +118,7 @@ public class UserTransactionServiceImplTest {
 		Optional<UserAccount> optionalPayeeAccount = Optional.of(payeeAccount);
 
 		when(userAccountRepository.findById(fundTransferRequestDto.getAccountId())).thenReturn(optionalUserAccount);
-		when(userAccountRepository.findById(fundTransferRequestDto.getPayeeAccountId()))
+		when(userAccountRepository.findByAccountNumber(1663636647774L))
 				.thenReturn(optionalPayeeAccount);
 
 		ResponseDto response = userTransactionServiceImpl.fundTransfer(fundTransferRequestDto);
@@ -133,7 +133,7 @@ public class UserTransactionServiceImplTest {
 		Optional<UserAccount> optionalUserAccount = Optional.of(userAccount);
 
 		when(userAccountRepository.findById(fundTransferRequestDto.getAccountId())).thenReturn(optionalUserAccount);
-		when(userAccountRepository.findById(fundTransferRequestDto.getPayeeAccountId()))
+		when(userAccountRepository.findByAccountNumber(1663636647774L))
 				.thenReturn(Optional.ofNullable(null));
 
 		userTransactionServiceImpl.fundTransfer(fundTransferRequestDto);
@@ -156,10 +156,10 @@ public class UserTransactionServiceImplTest {
 	@Test
 	public void testFindUserTransactionsByMonth() {
 
-		when(userTransactionRepository.getAllByUserAccountIdAndTransactionDateBetween(userAccount.getId(), LocalDate.of(2019, 12, 01), LocalDate.of(2019, 12, 31)))
+		when(userTransactionRepository.getAllByUserAccountIdIdAndTransactionDateBetween(userAccount.getId(), LocalDate.of(2019, 12, 01), LocalDate.of(2019, 12, 31)))
 				.thenReturn(userTransactions);
 		List<UserTransaction> userTransactions = userTransactionRepository
-				.getAllByUserAccountIdAndTransactionDateBetween(userAccount.getId(), LocalDate.of(2019, 12, 01), LocalDate.of(2019, 12, 31));
+				.getAllByUserAccountIdIdAndTransactionDateBetween(userAccount.getId(), LocalDate.of(2019, 12, 01), LocalDate.of(2019, 12, 31));
 		Assert.assertNotNull(userTransactions);
 		Assert.assertEquals(1, userTransactions.size());
 	}

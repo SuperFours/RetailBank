@@ -1,6 +1,5 @@
 package com.banking.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,17 +9,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.banking.constant.AppConstant;
 import com.banking.dto.AccountBalanceDto;
 import com.banking.dto.UserAccountDto;
-import com.banking.dto.ViewPayeeDto;
+import com.banking.dto.ViewPayeeResponseDto;
 import com.banking.entity.User;
 import com.banking.entity.UserAccount;
 import com.banking.repository.UserAccountRepository;
 import com.banking.repository.UserRepository;
-import com.banking.util.ConverterUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,23 +45,34 @@ public class UserAccountServiceImpl implements UserAccountService {
 	private UserRepository userRepository;
 
 	/**
-	 * @description - get the payee list based on the user login account number.
 	 * 
+	 * @description - get the payee list based on the user login account number.
 	 * @param user login accountId
-	 * @return list of the viewpayee details through the viewpayeedto object.
+	 * @return list of the view payee details through the view payee dto object.
+	 * 
 	 */
 	@Override
-	public List<ViewPayeeDto> getAllPayees(Integer accountId) {
+	public ViewPayeeResponseDto getAllPayees(String userId) {
+
+		ViewPayeeResponseDto responseDto = new ViewPayeeResponseDto();
+
 		logger.info("get all payees...");
-		List<ViewPayeeDto> viewPayeeDtos = new ArrayList<>();
-		List<UserAccount> userAccounts = userAccountRepository.findAllByIdNot(accountId);
-		userAccounts.forEach(userAccount -> {
-			Optional<User> user = userRepository.findById(userAccount.getUserId());
-			if (user.isPresent()) {
-				viewPayeeDtos.add(ConverterUtil.convertTransactionToPayeeDto(userAccount, user.get()));
-			}
-		});
-		return viewPayeeDtos;
+	
+			User user = userRepository.findUserByPhone(userId);
+			Optional<User> optionalUser = Optional.ofNullable(user);
+			if(optionalUser.isPresent()) {
+				
+				RestTemplate restTemplate = new RestTemplate();
+				String endPointUrl = AppConstant.GET_MAINTAIN_PAYEE_LIST + optionalUser.get().getPhone()
+						+ AppConstant.GET_MAINTAIN_PAYEE;
+				ResponseEntity<ViewPayeeResponseDto> payeesResponse = restTemplate.getForEntity(endPointUrl,
+						ViewPayeeResponseDto.class);
+				responseDto = payeesResponse.getBody();
+			
+		}
+
+		return responseDto;
+
 	}
 
 	/**

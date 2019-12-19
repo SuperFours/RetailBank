@@ -17,6 +17,6 @@ public interface UserTransactionRepository extends JpaRepository<UserTransaction
 	List<UserTransaction> findAllByUserAccountIdIdOrPayeeAccountIdIdOrderByIdDesc(Integer userAccountId,
 			Integer payyeAccountId);
 
-	List<UserTransaction> getAllByUserAccountIdAndTransactionDateBetween(Integer userAccountId, LocalDate startDate,
+	List<UserTransaction> getAllByUserAccountIdIdAndTransactionDateBetween(Integer userAccountId, LocalDate startDate,
 			LocalDate endDate);
 }

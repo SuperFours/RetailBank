@@ -7,7 +7,7 @@ package com.banking.constant;
  * @since 14-12-2019
  */
 public class AppConstant {
-	
+
 	private AppConstant() {
 
 	}
@@ -63,4 +63,8 @@ public class AppConstant {
 
 	public static final String MORTGAGE_ACCOUNT_CREATED = "Mortgage account is created successfully";
 	public static final String USER_MORTGAGE_ACCOUNT_EXIST = "User Mortgage Account already exist";
+	
+	// Get Maintain Payee List
+	public static final String GET_MAINTAIN_PAYEE_LIST = "http://localhost:8081/maintainpayee/payee/accounts/";
+	public static final String GET_MAINTAIN_PAYEE = "/payees";
 }

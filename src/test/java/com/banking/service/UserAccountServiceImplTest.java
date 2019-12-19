@@ -19,7 +19,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.banking.constant.AppConstant;
 import com.banking.dto.AccountBalanceDto;
 import com.banking.dto.UserAccountDto;
-import com.banking.dto.ViewPayeeDto;
 import com.banking.entity.User;
 import com.banking.entity.UserAccount;
 import com.banking.repository.UserAccountRepository;
@@ -49,18 +48,6 @@ public class UserAccountServiceImplTest {
 		userAccount.setId(3);
 		userAccount.setAccountType(AppConstant.ACCOUNT_TYPE_SAVINGS);
 		userAccount.setAccountNumber(10687382732L);
-	}
-
-	@Test
-	public void testGetAllPayees() {
-		List<UserAccount> userAccounts = new ArrayList<>();
-		userAccounts.add(userAccount);
-
-		when(userAccountRepository.findAllByIdNot(2)).thenReturn(userAccounts);
-		when(userRepository.findById(userAccount.getUserId())).thenReturn(Optional.of(user));
-
-		List<ViewPayeeDto> viewPayees = userAccountServiceImpl.getAllPayees(2);
-		assertThat(viewPayees).hasSize(1);
 	}
 
 	@Test

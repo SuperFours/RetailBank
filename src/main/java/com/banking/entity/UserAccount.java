@@ -23,7 +23,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Table(name = "user_account")
-@SequenceGenerator(name = "accountNumber", allocationSize = 1, initialValue = 50006000)
+@SequenceGenerator(name = "accountNumber", allocationSize = 1, initialValue = 500001)
 public class UserAccount {
 
 	@Id

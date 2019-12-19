@@ -1,6 +1,5 @@
 package com.banking.controller;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -20,7 +19,6 @@ import com.banking.constant.AppConstant;
 import com.banking.dto.AccountBalanceDto;
 import com.banking.dto.UserAccountDto;
 import com.banking.dto.UserAccountResponseDto;
-import com.banking.dto.ViewPayeeDto;
 import com.banking.service.UserAccountService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -37,14 +35,6 @@ public class UserAccountControllerTest {
 		MockitoAnnotations.initMocks(this);
 	}
 
-	@Test
-	public void testGetAllPayees() {
-		List<ViewPayeeDto> viewPayeeDtos = new ArrayList<>();
-		when(userAccountService.getAllPayees(1)).thenReturn(viewPayeeDtos);
-
-		ResponseEntity<List<ViewPayeeDto>> response = userAccountController.getAllPayees(1);
-		assertThat(response.getBody()).hasSize(0);
-	}
 
 	@Test
 	public void testGetUserAvailableBalance() {

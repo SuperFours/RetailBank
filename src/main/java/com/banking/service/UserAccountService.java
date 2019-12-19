@@ -4,11 +4,11 @@ import java.util.List;
 
 import com.banking.dto.AccountBalanceDto;
 import com.banking.dto.UserAccountDto;
-import com.banking.dto.ViewPayeeDto;
+import com.banking.dto.ViewPayeeResponseDto;
 
 public interface UserAccountService {
 
-	public List<ViewPayeeDto> getAllPayees(Integer accountId);
+	public ViewPayeeResponseDto getAllPayees(String userId);
 
 	public AccountBalanceDto getAccountBalance(Integer userAccountId);
 	

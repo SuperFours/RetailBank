@@ -51,10 +51,11 @@ public class LoginServiceImpl implements LoginService {
 			Optional<UserAccount> userAccount = userAccountRepository.findByUserIdAndAccountType(user.getId(),
 					AppConstant.ACCOUNT_TYPE_SAVINGS);
 			if (userAccount.isPresent()) {
-				loginResponseDto.setAccountNumber(userAccount.get().getAccountNumber());
+				loginResponseDto.setAccountNumber(String.valueOf(userAccount.get().getAccountNumber()));
 				loginResponseDto.setAccountType(userAccount.get().getAccountType());
 				loginResponseDto.setAccountId(userAccount.get().getId());
 				loginResponseDto.setUserName(user.getFirstName().concat(" ").concat(user.getLastName()));
+				loginResponseDto.setPhoneNumber(user.getPhone());
 			}
 			loginResponseDto.setStatus(AppConstant.SUCCESS);
 			loginResponseDto.setMessage(AppConstant.LOGIN_SUCCESS_MESSAGE);

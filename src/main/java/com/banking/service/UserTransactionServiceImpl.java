@@ -70,9 +70,9 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 	public ResponseDto fundTransfer(FundTransferRequestDto fundTransferRequestDto) throws NotFoundException {
 		logger.info("fund transfer transaction...");
 		ResponseDto fundTransferResponseDto = new ResponseDto();
+		Long accountNumber = Long.valueOf(fundTransferRequestDto.getPayeeAccountNumber());
 		Optional<UserAccount> userAccountDetail = userAccountRepository.findById(fundTransferRequestDto.getAccountId());
-		Optional<UserAccount> userPayeeAccountDetail = userAccountRepository
-				.findById(fundTransferRequestDto.getPayeeAccountId());
+		Optional<UserAccount> userPayeeAccountDetail = userAccountRepository.findByAccountNumber(accountNumber);
 		if (userAccountDetail.isPresent() && userPayeeAccountDetail.isPresent()) {
 			// User Account Details
 			UserAccount userAccount = userAccountDetail.get();
@@ -165,7 +165,8 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 					userTransactionRequestDto.setPayeeName(user.get().getFirstName() + " " + user.get().getLastName());
 				}
 				userTransactionRequestDto.setRemarks(transaction.getRemarks());
-				userTransactionRequestDto.setPayeeAccountNumber(transaction.getPayeeAccountId().getAccountNumber());
+				userTransactionRequestDto
+						.setPayeeAccountNumber(String.valueOf(transaction.getPayeeAccountId().getAccountNumber()));
 				userTransactionRequestDto.setTransactionType(transaction.getTransactionType());
 				userTransactionRequestDto.setTransactionDate(transaction.getTransactionDate());
 				userTransactionRequestDto.setBalanceAmount(transaction.getPayeeAccountId().getBalanceAmount());
@@ -185,7 +186,8 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 	}
 
 	/**
-	 * @description this method is to get entire month transactions to respective userAccountId
+	 * @description this method is to get entire month transactions to respective
+	 *              userAccountId
 	 * 
 	 * @param userAccountId Integer, month Integer, year Integer - providing
 	 *                      required account number, month and year to search
@@ -200,14 +202,14 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 
 		String inputMonth = String.format("%02d", month);
 
-		LocalDate startDate = LocalDate.parse(year + "-" + inputMonth + "-" + AppConstant.MONTH_STARTDATE);
+		LocalDate startDate = LocalDate.parse(year + "-" + inputMonth + "-" + "01");
 
 		Integer lastDayOfMonth = YearMonth.of(year, month).atEndOfMonth().getDayOfMonth();
 
 		LocalDate endDate = LocalDate.parse(year + "-" + inputMonth + "-" + lastDayOfMonth);
 
 		List<UserTransaction> userTransactionResponse = userTransactionRepository
-				.getAllByUserAccountIdAndTransactionDateBetween(userAccountId, startDate, endDate);
+				.getAllByUserAccountIdIdAndTransactionDateBetween(userAccountId, startDate, endDate);
 
 		return convertUserTransactionEntityToUserTransactionResponseDto(userTransactionResponse);
 	}
@@ -242,7 +244,8 @@ public class UserTransactionServiceImpl implements UserTransactionService {
 					userTransactionRequestDto.setPayeeName(user.get().getFirstName() + " " + user.get().getLastName());
 				}
 				userTransactionRequestDto.setRemarks(request.getRemarks());
-				userTransactionRequestDto.setPayeeAccountNumber(request.getPayeeAccountId().getAccountNumber());
+				userTransactionRequestDto
+						.setPayeeAccountNumber(String.valueOf(request.getPayeeAccountId().getAccountNumber()));
 				userTransactionRequestDto.setTransactionType(request.getTransactionType());
 				userTransactionRequestDto.setTransactionDate(request.getTransactionDate());
 				userTransactionRequestDto.setTransactionAmount(request.getTransactionAmount());

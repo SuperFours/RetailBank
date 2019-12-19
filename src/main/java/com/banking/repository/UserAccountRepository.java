@@ -14,6 +14,8 @@ import com.banking.entity.UserAccount;
 public interface UserAccountRepository extends JpaRepository<UserAccount, Integer> {
 
 	UserAccount findByUserId(Integer userId);
+	
+	Optional<UserAccount> findByAccountNumber(Long accountNumber);
 
 	List<UserAccount> findAllByIdNot(Integer accountId);
 

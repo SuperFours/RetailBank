@@ -23,7 +23,7 @@ import lombok.ToString;
 public class UserTransactionRequestDto {
 
 	private String payeeName;
-	private Long payeeAccountNumber;
+	private String payeeAccountNumber;
 	private String transactionType;
 	private LocalDate transactionDate;
 	private Double balanceAmount;
